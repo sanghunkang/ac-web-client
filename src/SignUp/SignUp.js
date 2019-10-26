@@ -1,4 +1,5 @@
-import React from 'react';
+// import React from 'react';
+import React, { useState } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -51,8 +52,78 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function SignUp() {
+export default function SignUp(props) {
   const classes = useStyles();
+  const [firstName, setFirstName] = useState(
+    ''
+  );
+
+  const [lastName, setLastName] = useState(
+    ''
+  );
+
+  const [username, setUsername] = useState(
+    ''
+  );
+  const [email, setEmail] = useState(
+    ''
+  );
+  const [password, setPassword] = useState(
+    ''
+  );
+
+
+  const handleChangeFirstName = (e) => {
+    setFirstName(e.target.value)
+  }
+
+  const handleChangeLastName = (e) => {
+    setLastName(e.target.value)
+  }
+
+  const handleChangeUsername = (e) => {
+    setUsername(e.target.value)
+  }
+
+  const handleChangeEmail = (e) => {
+    setEmail(e.target.value)
+  }
+
+  const handleChangePassword = (e) => {
+    setPassword(e.target.value)
+  }
+
+  const handleClickSignUp = () => {
+    let willSubmit = true
+    if (firstName === '') {
+      willSubmit = false  
+      alert('경고')
+    } 
+
+    if (lastName === '') {
+      willSubmit = false
+      alert('경고')
+    }
+    
+    if (email === '') {
+      willSubmit = false
+      alert('경고')  
+    }
+
+    if (username === '') {
+      willSubmit = false
+      alert('경고')  
+    }
+
+    if (password === '') {
+      willSubmit = false
+      alert('경고')  
+    }
+
+    if (willSubmit === true) {
+      props.handleSubmit()
+    }
+  }
 
   return (
     <Container component="main" maxWidth="xs">
@@ -76,6 +147,7 @@ export default function SignUp() {
                 id="firstName"
                 label="First Name"
                 autoFocus
+                onChange={handleChangeFirstName}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -87,6 +159,19 @@ export default function SignUp() {
                 label="Last Name"
                 name="lastName"
                 autoComplete="lname"
+                onChange={handleChangeLastName}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                variant="outlined"
+                required
+                fullWidth
+                id="username"
+                label="Username"
+                name="username"
+                autoComplete="username"
+                onChange={handleChangeUsername}
               />
             </Grid>
             <Grid item xs={12}>
@@ -98,6 +183,7 @@ export default function SignUp() {
                 label="Email Address"
                 name="email"
                 autoComplete="email"
+                onChange={handleChangeEmail}
               />
             </Grid>
             <Grid item xs={12}>
@@ -110,6 +196,7 @@ export default function SignUp() {
                 type="password"
                 id="password"
                 autoComplete="current-password"
+                onChange={handleChangePassword}
               />
             </Grid>
             <Grid item xs={12}>
@@ -125,12 +212,15 @@ export default function SignUp() {
             variant="contained"
             color="primary"
             className={classes.submit}
-          >
+            onClick={handleClickSignUp}>
             Sign Up
           </Button>
           <Grid container justify="flex-end">
             <Grid item>
-              <Link href="#" variant="body2">
+              <Link
+                href="#"
+                variant="body2"
+                onClick={props.handleClickSignIn}>
                 Already have an account? Sign in
               </Link>
             </Grid>

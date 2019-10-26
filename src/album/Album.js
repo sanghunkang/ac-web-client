@@ -61,7 +61,7 @@ const useStyles = makeStyles(theme => ({
 
 const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
-export default function Album() {
+export default function Album(props) {
   const classes = useStyles();
 
   return (
@@ -71,32 +71,39 @@ export default function Album() {
         <Toolbar>
           <CameraIcon className={classes.icon} />
           <Typography variant="h6" color="inherit" noWrap>
-            Album layout
+            Adaptive Cram
           </Typography>
         </Toolbar>
       </AppBar>
       <main>
         {/* Hero unit */}
         <div className={classes.heroContent}>
-          <Container maxWidth="sm">
+          <Container maxWidth="md">
             <Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom>
-              Album layout
+              Adaptive Cram
             </Typography>
             <Typography variant="h5" align="center" color="textSecondary" paragraph>
-              Something short and leading about the collection below—its contents, the creator, etc.
-              Make it short and sweet, but not too short so folks don&apos;t simply skip over it
-              entirely.
+              블로그나 소셜미디어를 읽는 시간은 당신에게 감동을 줄 수 있습니다.
+            </Typography>
+            <Typography variant="h5" align="center" color="textSecondary" paragraph>
+              Adative Cram을 사용하는 시간은 당신의 미래를 바꿀 수 있습니다.
             </Typography>
             <div className={classes.heroButtons}>
               <Grid container spacing={2} justify="center">
                 <Grid item>
-                  <Button variant="contained" color="primary">
-                    Main call to action
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={props.handleClickSignUp}>
+                    지금 시작하기
                   </Button>
                 </Grid>
                 <Grid item>
-                  <Button variant="outlined" color="primary">
-                    Secondary action
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    onClick={props.handleClickDownloadApp}>
+                    앱스토어에서 다운로드
                   </Button>
                 </Grid>
               </Grid>
@@ -116,7 +123,7 @@ export default function Album() {
                   />
                   <CardContent className={classes.cardContent}>
                     <Typography gutterBottom variant="h5" component="h2">
-                      Heading
+                      장점들
                     </Typography>
                     <Typography>
                       This is a media card. You can use this section to describe the content.

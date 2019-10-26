@@ -86,6 +86,19 @@ const tiers = [
     buttonVariant: 'outlined',
   },
   {
+    title: 'Basic',
+    subheader: 'Most popular',
+    price: '1000',
+    description: [
+      '20 users included',
+      '10 GB of storage',
+      'Help center access',
+      'Priority email support',
+    ],
+    buttonText: 'Get started',
+    buttonVariant: 'contained',
+  },
+  {
     title: 'Pro',
     subheader: 'Most popular',
     price: '15',
@@ -111,6 +124,7 @@ const tiers = [
     buttonVariant: 'outlined',
   },
 ];
+
 const footers = [
   {
     title: 'Company',
@@ -130,7 +144,7 @@ const footers = [
   },
 ];
 
-export default function Pricing() {
+export default function Pricing(props) {
   const classes = useStyles();
 
   return (
@@ -200,7 +214,11 @@ export default function Pricing() {
                   </ul>
                 </CardContent>
                 <CardActions>
-                  <Button fullWidth variant={tier.buttonVariant} color="primary">
+                  <Button
+                    fullWidth
+                    variant={tier.buttonVariant}
+                    color="primary"
+                    onClick={props.handleClickSignUp}>
                     {tier.buttonText}
                   </Button>
                 </CardActions>
