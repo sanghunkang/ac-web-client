@@ -81,14 +81,20 @@ const tiers = [
   {
     title: 'Free',
     price: '0',
-    description: ['10 users included', '2 GB of storage', 'Help center access', 'Email support'],
+    description: [
+      '20 users included',
+      '10 GB of storage',
+      'Help center access',
+      'Priority email support',
+      '맞춤형 문제 추천 AI',
+    ],
     buttonText: 'Sign up for free',
     buttonVariant: 'outlined',
   },
   {
-    title: 'Basic',
+    title: 'Standard',
     subheader: 'Most popular',
-    price: '1000',
+    price: '1000원',
     description: [
       '20 users included',
       '10 GB of storage',
@@ -99,28 +105,16 @@ const tiers = [
     buttonVariant: 'contained',
   },
   {
-    title: 'Pro',
-    subheader: 'Most popular',
-    price: '15',
-    description: [
-      '20 users included',
-      '10 GB of storage',
-      'Help center access',
-      'Priority email support',
-    ],
-    buttonText: 'Get started',
-    buttonVariant: 'contained',
-  },
-  {
-    title: 'Enterprise',
-    price: '30',
+    title: 'Premium',
+    subheader: '비즈니스 사용자에게 추천합니다.',
+    price: '30 ',
     description: [
       '50 users included',
       '30 GB of storage',
       'Help center access',
       'Phone & email support',
     ],
-    buttonText: 'Contact us',
+    buttonText: 'Get started',
     buttonVariant: 'outlined',
   },
 ];
@@ -199,7 +193,7 @@ export default function Pricing(props) {
                 <CardContent>
                   <div className={classes.cardPricing}>
                     <Typography component="h2" variant="h3" color="textPrimary">
-                      ${tier.price}
+                      {tier.price}
                     </Typography>
                     <Typography variant="h6" color="textSecondary">
                       /mo

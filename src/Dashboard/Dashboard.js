@@ -1,4 +1,5 @@
-import React  from 'react';
+import React from 'react';
+import { Route, Switch, useHistory, useRouteMatch } from 'react-router-dom';
 // import { Fragment, ImageIcon }  from 'react';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
@@ -6,7 +7,6 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import List from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
@@ -19,11 +19,13 @@ import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import PersonIcon from '@material-ui/icons/Person';
-import { mainListItems, secondaryListItems } from './listItems';
+
+import MainListItems from './listItems';
+import MyProblemSets from './MyProblemSets/MyProblemSets';
 import Chart from './Chart';
 import Deposits from './Deposits';
 import Orders from './Orders';
-import Button from '@material-ui/core/Button';
+// import { Switch } from '@material-ui/core';
 
 function Copyright() {
   return (
@@ -121,14 +123,32 @@ const useStyles = makeStyles(theme => ({
 
 export default function Dashboard(props) {
   const classes = useStyles();
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = React.useState(false);
+
+
+  let { path } = useRouteMatch();
+  let history = useHistory();
+
+
   const handleDrawerOpen = () => {
     setOpen(true);
   };
   const handleDrawerClose = () => {
     setOpen(false);
   };
-  const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+  const handleClickMyProblemSets = () => {
+    console.log('clicked anyway')
+    console.log(history)
+    history.push('/dashboard/my-problem-sets')
+    // props.handleClickMyProblemSets()
+  }
+
+  const handleClickDashboard = () => {
+    history.push('/dashboard/dashboard')
+  }
+
+
+  // const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
   return (
     <div className={classes.root}>
@@ -172,19 +192,42 @@ export default function Dashboard(props) {
           </IconButton>
         </div>
         <Divider />
-        <List>{mainListItems}</List>
+        <MainListItems
+          handleClickDashboard={handleClickDashboard}
+          handleClickMyProblemSets={handleClickMyProblemSets}>
+          
+        </MainListItems>
         <Divider />
-        <List>{secondaryListItems}</List>
-        <Divider />
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={props.handleClickUpgradePlan}>
-          Upgrade My Plan
-        </Button>
+        {/* <List>{secondaryListItems}</List> */}
+        
       </Drawer>
-      <main className={classes.content}>
-        <div className={classes.appBarSpacer} />
+
+      <Switch>
+        <Route exact path={path}>
+          <Main />
+        </Route>
+        <Route path={`${path}/dashboard`}>
+          <Main />
+        </Route>
+        <Route path={`${path}/my-problem-sets`}>
+          <MyProblemSets
+            history={history}>
+          </MyProblemSets>
+        </Route>
+      </Switch>
+
+      
+    </div>
+  );
+}
+
+function Main(props) {
+  const classes = useStyles();
+  const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+
+  return(
+    <main className={classes.content}>
+      <div className={classes.appBarSpacer} />
         <Container maxWidth="lg" className={classes.container}>
           <Grid container spacing={3}>
             {/* Chart */}
@@ -199,22 +242,7 @@ export default function Dashboard(props) {
                 <Deposits />
               </Paper>
             </Grid>
-            <Grid item xs={12} md={4} lg={3}>
-              <input
-                accept="image/*"
-                className={classes.input}
-                style={{ display: 'none' }}
-                id="raised-button-file"
-                multiple
-                type="file"
-              />
-              <label htmlFor="raised-button-file">
-                <Button variant="raised" component="span" className={classes.button}>
-                  Upload
-                </Button>
-                
-              </label> 
-            </Grid>
+            
             {/* Recent Orders */}
             <Grid item xs={12}>
               <Paper className={classes.paper}>
@@ -223,8 +251,7 @@ export default function Dashboard(props) {
             </Grid>
           </Grid>
         </Container>
-        <Copyright />
-      </main>
-    </div>
-  );
+      <Copyright />
+    </main>
+  )
 }

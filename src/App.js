@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {  } from 'react';
 import { Route, Switch, useHistory } from 'react-router-dom';
 
 
@@ -15,7 +15,7 @@ import Checkout from './Checkout/Checkout.js'
 
 function App() {
   let history = useHistory();
-  
+
   const handleClickSignIn = () => {
     var isAuthed = false;
     if (isAuthed === true) {
@@ -41,6 +41,10 @@ function App() {
 
   const handleClickDownloadApp = () => {
     alert("준비중입니다.")
+  }
+
+  const handleClickMyProblemSets = () => {
+    history.push('/dashboard/my-problem-sets')
   }
 
   const handleSubmit = () => {
@@ -85,6 +89,7 @@ function App() {
         path='/dashboard'
         render={routeProps => (
           <Dashboard
+            handleClickMyProblemSets={handleClickMyProblemSets}
             handleClickUpgradePlan={handleClickUpgradePlan}
           />
         )} 
@@ -113,14 +118,6 @@ function App() {
   );
     
 }
-
-// const Appp = () => (
-//   <div>
-    
-//   </div>
-// )
-
-// ReactDOM.render(<App />, document.querySelector('#app'));
 
 
 export default App;

@@ -9,10 +9,28 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
+import clsx from 'clsx';
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+import ErrorIcon from '@material-ui/icons/Error';
+import InfoIcon from '@material-ui/icons/Info';
+import CloseIcon from '@material-ui/icons/Close';
+
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import IconButton from '@material-ui/core/IconButton';
+import SnackbarContent from '@material-ui/core/SnackbarContent';
+import WarningIcon from '@material-ui/icons/Warning';
+import { amber, green } from '@material-ui/core/colors';
+// import { statement } from '@babel/template';
+
+const variantIcon = {
+  success: CheckCircleIcon,
+  warning: WarningIcon,
+  error: ErrorIcon,
+  info: InfoIcon,
+};
 
 function Copyright() {
   return (
@@ -52,25 +70,69 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+const useStyles1 = makeStyles(theme => ({
+  success: {
+    backgroundColor: green[600],
+  },
+  error: {
+    backgroundColor: theme.palette.error.dark,
+  },
+  info: {
+    backgroundColor: theme.palette.primary.main,
+  },
+  warning: {
+    backgroundColor: amber[700],
+  },
+  icon: {
+    fontSize: 20,
+  },
+  iconVariant: {
+    opacity: 0.9,
+    marginRight: theme.spacing(1),
+  },
+  message: {
+    display: 'flex',
+    alignItems: 'center',
+  },
+}));
+
+
+function MySnackbarContentWrapper(props) {
+  const classes = useStyles1();
+  const { className, message, onClose, variant, ...other } = props;
+  const Icon = variantIcon[variant];
+
+  return (
+    <SnackbarContent
+      className={clsx(classes[variant], className)}
+      aria-describedby="client-snackbar"
+      message={
+        <span id="client-snackbar" className={classes.message}>
+          <Icon className={clsx(classes.icon, classes.iconVariant)} />
+          {message}
+        </span>
+      }
+      action={[
+        <IconButton key="close" aria-label="close" color="inherit" onClick={onClose}>
+          <CloseIcon className={classes.icon} />
+        </IconButton>,
+      ]}
+      {...other}
+    />
+  );
+}
+
+
+
 export default function SignUp(props) {
   const classes = useStyles();
-  const [firstName, setFirstName] = useState(
-    ''
-  );
-
-  const [lastName, setLastName] = useState(
-    ''
-  );
-
-  const [username, setUsername] = useState(
-    ''
-  );
-  const [email, setEmail] = useState(
-    ''
-  );
-  const [password, setPassword] = useState(
-    ''
-  );
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState(false);
+  // const [errorMessage, setErrorMessage] = useState('TO BE IMPLEMENTED');
 
 
   const handleChangeFirstName = (e) => {
@@ -97,36 +159,53 @@ export default function SignUp(props) {
     let willSubmit = true
     if (firstName === '') {
       willSubmit = false  
-      alert('경고')
     } 
 
     if (lastName === '') {
       willSubmit = false
-      alert('경고')
     }
     
     if (email === '') {
       willSubmit = false
-      alert('경고')  
     }
 
     if (username === '') {
       willSubmit = false
-      alert('경고')  
     }
 
     if (password === '') {
       willSubmit = false
-      alert('경고')  
     }
 
     if (willSubmit === true) {
+      console.log(willSubmit);
       props.handleSubmit()
+    } else {
+      console.log(willSubmit);
+      setError(true);
+      // setErrorMessage('TO BE IMPLEMENTED');
     }
   }
 
+  const handleClose = () => {
+    setError(false);
+  }
+
   return (
-    <Container component="main" maxWidth="xs">
+      <Container component="main" maxWidth="xs">
+        { error
+          ?<Grid container spacing={3}>
+            <Grid item xs={12} md={12} lg={12}>
+              <MySnackbarContentWrapper
+                variant="error"
+                className={classes.margin}
+                message="This is an error message!"
+                onClose={handleClose}/>
+            </Grid>
+          </Grid>
+          : null
+        }
+
       <CssBaseline />
       <div className={classes.paper}>
         <Avatar className={classes.avatar}>
@@ -135,7 +214,8 @@ export default function SignUp(props) {
         <Typography component="h1" variant="h5">
           Sign up
         </Typography>
-        <form className={classes.form} noValidate>
+        {/* <form className={classes.form} noValidate> */}
+        <form className={classes.form}>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <TextField
