@@ -39,7 +39,7 @@ export default function ProblemList(props) {
 				<TableBody>
 					{props.problems.map((row, i) => (
 						<TableRow key={'problem' + i}>
-							<TableCell>{row.data}</TableCell>
+							<TableCell>{row.problem_id}</TableCell>
 							<TableCell>{row.question}</TableCell>
 							<TableCell>{renderBool(row.answer)}</TableCell>
 							<TableCell>{row.solution}</TableCell>

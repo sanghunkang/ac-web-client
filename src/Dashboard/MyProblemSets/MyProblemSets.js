@@ -35,9 +35,21 @@ function checkValidInput(row) {
 	return false
 }
 
+function processGetSetNamesResponse(res) {
+	return res.map((row) => {
+		return({
+			'set_name': row.set_name,
+			'problem_type': 'TO BE IMPLEMENTED',
+			'owner':  'TO BE IMPLEMENTED',
+			'is_open':  'TO BE IMPLEMENTED',
+		})
+	});
+}
+
 function processResponse(res) {
 	return res.map((row) => {
 		return({
+			'problem_id': row.problem_id,
 			'question': row.question,
 			'answer': row.answer,
 			'solution': row.solution
@@ -127,35 +139,34 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-let problemSets = [
-	{'name': 'commercial_law', 'problem_type': 'OX형', 'owner': 'me', 'is_open': 'false'},
-	{'name': '토익 900 단어', 'problem_type': '다지선다형', 'owner': 'naldaram', 'is_open': 'true'},
-]
+// let problemSets = [
+// 	{'name': 'commercial_law', 'problem_type': 'OX형', 'owner': 'me', 'is_open': 'false'},
+// 	{'name': '토익 900 단어', 'problem_type': '다지선다형', 'owner': 'naldaram', 'is_open': 'true'},
+// ]
 
 export default function MyProblemSets(props) {
 	const classes = useStyles();
 	let { path } = useRouteMatch();
 	let [problems, setProblems] = useState([]);
 	let [collectionName, setCollectionName] = useState(null);
+	let [problemSets, setProblemSets] = useState([]);
 
-	// useEffect(() => {
-
-	// 	// var url = new URL('/getContents')
-	// 	// var params = {'set_name': collectionName, 'num_contents': 5}
-	// 	// var params = {lat:35.696233, long:139.570431} // or:
-	// 	// var params = [['lat', '35.696233'], ['long', '139.570431']]
-
-	// 	// url.search = new URLSearchParams(params).toString();
-
-	// 	// fetch(url)
-	// 	// var url = new URL("https://geo.example.org/api")
+	useEffect(() => {
+		let baseRoute = '/getSetNames?'; // TODO: URL will be changed
+		let queryString = '';//`set_name=${encodeURIComponent(collectionName)}&num_problems=${encodeURIComponent(10)}`;
+		let routeQuery = baseRoute + queryString;
+		console.log(routeQuery);
+		// fetch('/getContents?set_name=commercial_law&num_contents=10')
+		fetch(routeQuery)		
+      .then((res)=> res.json())
+      .then((res)=> {
+				console.log(res);
+				setProblemSets(processGetSetNamesResponse(res));
+				console.log(problems);
+			})
+      .catch((err)=> console.log(err)) ;
+	}, []);
 		
-  // // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [collectionName]);
-
-
-	
-
 	const handleChangeFileLoad = (e) => {
 		var files = e.target.files, file;
 		if (!files || files.length === 0) {
@@ -224,8 +235,8 @@ export default function MyProblemSets(props) {
 		// var params = {'set_name': collectionName, 'num_contents': 5}
 		// Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
 		
-		let baseRoute = '/getContents?'; // TODO: URL will be changed
-		let queryString = `set_name=${encodeURIComponent(collectionName)}&num_contents=${encodeURIComponent(10)}`;
+		let baseRoute = '/getProblems?'; // TODO: URL will be changed
+		let queryString = `set_name=${encodeURIComponent(collectionName)}&num_problems=${encodeURIComponent(10)}`;
 		let routeQuery = baseRoute + queryString;
 		console.log(routeQuery);
 		// fetch('/getContents?set_name=commercial_law&num_contents=10')

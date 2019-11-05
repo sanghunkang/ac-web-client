@@ -79,6 +79,7 @@ function App() {
         exact path='/signin'
         render={routeProps => (
           <SignInSide
+            history={history}
             handleClickSignIn={handleClickSignIn}
             handleClickSignUp={handleClickUpgradePlan}
           />)

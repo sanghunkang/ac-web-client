@@ -31,14 +31,14 @@ export default function ProblemSetList(props) {
 				<TableBody>
 					{props.problemSets.map((row, i) => (
 						<TableRow key={'problem' + i}>
-							<TableCell>{row.name}</TableCell>
+							<TableCell>{row.set_name}</TableCell>
 							<TableCell>{row.problem_type}</TableCell>
 							<TableCell>{row.owner}</TableCell>
 							<TableCell>{row.is_open}</TableCell>
 							{/* <TableCell align="right"> */}
 							<TableCell>
 								<EditIcon
-									collectionName={row.name} // Get Attibute of a target?
+									collectionName={row.set_name} // Get Attibute of a target?
 									onClick={props.handleClickEdit}/>
 								<GetAppIcon	
 									onClick={props.handleClickDownload}/>
