@@ -1,4 +1,4 @@
-import React, { Component, Fragment, useHistory } from 'react';
+import React, { Component, useHistory } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -13,9 +13,8 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 
-import styled from 'styled-components';
-
-import FacebookLogin from 'react-facebook-login';
+// import FacebookLogin from 'react-facebook-login';
+import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
 import GoogleLogin from 'react-google-login';
 import NaverLogin from 'react-naver-login';
 import KakaoLogin from 'react-kakao-login';
@@ -117,6 +116,8 @@ export default function SignInSide(props) {
             >
               Sign In
             </Button>
+            
+            <SocialLogins />
             <Grid container>
               <Grid item xs>
                 <Link href="#" variant="body2">
@@ -131,13 +132,14 @@ export default function SignInSide(props) {
                   {"Don't have an account? Sign Up"}
                 </Link>
               </Grid>
+              
             </Grid>
             <Box mt={5}>
               <Copyright />
             </Box>
           </form>
         </div>
-        <SocialLogins />
+        
       </Grid>
     </Grid>
   );
@@ -164,89 +166,85 @@ class SocialLogins extends Component {
 
     return (
       <div className="SocialLogins">
-
-      <FacebookLogin
-        appId="" //APP ID NOT CREATED YET
-        fields="name,email,picture"
-        callback={responseFacebook}
-      />
-
-      <GoogleLogin
-        clientId="292329597156-8s4pmp5lte5pj73jvfa1r45jl18v4big.apps.googleusercontent.com" //CLIENTID NOT CREATED YET
-        buttonText="LOGIN WITH GOOGLE"
-        onSuccess={responseGoogle}
-        onFailure={responseGoogle}
-      />
-
-      <NaverLogin 
-        clientId="sdffdNNFDSjsddiosd"
-        callbackUrl="http://127.0.0.1:3000/login"
-        render={(props) => <div onClick={props.onClick}>Naver Login</div>}
-        onSuccess={(naverUser) => console.log(naverUser)}
-        onFailure={(result) => console.error(result)}
-      />,
-
-      <Fragment>
-          <p><code>No options</code></p>
-          <KakaoLogin
-            jsKey={key}
-            onSuccess={success}
-            onFailure={failure}
+        <div p={1}>
+          <GoogleLogin
+            clientId="292329597156-8s4pmp5lte5pj73jvfa1r45jl18v4big.apps.googleusercontent.com" //CLIENTID NOT CREATED YET
+            render={renderProps => (
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                color="primary"
+                style={{backgroundColor: "#DB4437"}}
+                onClick={renderProps.onClick}
+                disabled={renderProps.disabled}>
+                Sign in with Google
+              </Button>
+            )}
+            buttonText="Login"
+            onSuccess={responseGoogle}
+            onFailure={responseGoogle}
           />
-          <p>Change button text with <code>buttonText</code></p>
+        </div>
+        <div p={1}>
+          <FacebookLogin
+            appId="" //APP ID NOT CREATED YET
+            render={renderProps => (
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                color="primary"
+                style={{backgroundColor: "#3B5998"}}
+                onClick={renderProps.onClick}
+                disabled={renderProps.disabled}>
+                Sign in with Facebook
+              </Button>
+            )}
+            fields="name,email,picture"
+            callback={responseFacebook}
+          />
+        </div>
+        <div>
           <KakaoLogin
             jsKey={key}
+            render={renderProps => (
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                color="primary"
+                style={{backgroundColor: "#FFE812"}}
+                onClick={renderProps.onClick}
+                disabled={renderProps.disabled}>
+                Sign in with Kakao
+              </Button>
+            )}
             onSuccess={success}
             onFailure={failure}
             buttonText="Button Text"
           />
-          <p>Use style that is defined in KakaoLogin component with <code>useDefaultStyle</code></p>
-          <KakaoLogin
-            jsKey={key}
-            onSuccess={success}
-            onFailure={failure}
-            useDefaultStyle
-          />
-          <p>Pass component that is styled as <code>children</code></p>
-          <KakaoLogin
-            jsKey={key}
-            onSuccess={success}
-            onFailure={failure}
-          >
-            <Italic>Children</Italic>
-          </KakaoLogin>
-          <p>Pass <code>className</code> to style component</p>
-          <KakaoLogin
-            jsKey={key}
-            onSuccess={success}
-            onFailure={failure}
-            className="css-with-class"
-          />
-          <p>Pass <code>render</code> function to render fully customized component</p>
-          <KakaoLogin
-            jsKey={key}
-            onSuccess={success}
-            onFailure={failure}
-            render={props => (
-              <a
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  props.onClick();
-                }}
-              >
-                Render Prop
-              </a>
+        </div>
+        <div>
+          <NaverLogin 
+            clientId="sdffdNNFDSjsddiosd"
+            callbackUrl="http://127.0.0.1:3000/login"
+            render={renderProps => (
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                color="primary"
+                style={{backgroundColor: "#1EC800"}}
+                onClick={renderProps.onClick}
+                disabled={renderProps.disabled}>
+                Sign in with Naver
+              </Button>
             )}
+            onSuccess={(naverUser) => console.log(naverUser)}
+            onFailure={(result) => console.error(result)}
           />
-          <p>Use <code>third party</code>, like <code>styled-components</code></p>
-          <StyledKakaoLogin
-            jsKey={key}
-            onSuccess={success}
-            onFailure={failure}
-          />
-        </Fragment>
-
+        </div>
       </div>
     );
   }
@@ -263,23 +261,3 @@ const failure = (error) => {
   console.log(error);
 };
  
- 
-const Italic = styled.i`
-  color: #3c1e1e;
-  font-size: 20px;
-  font-weight: 700;
-`;
-
-const StyledKakaoLogin = styled(KakaoLogin)`
-  display: inline-block;
-  padding: 0;
-  width: 222px;
-  height: 49px;
-  line-height: 49px;
-  color: #3C1E1E;
-  background-color: #FFEB00;
-  border: 1px solid transparent;
-  border-radius: 3px;
-  font-size: 16px;
-  text-align: center;
-`;
