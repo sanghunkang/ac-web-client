@@ -126,45 +126,27 @@ function MySnackbarContentWrapper(props) {
 
 export default function SignUp(props) {
   const classes = useStyles();
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState(props.email);
+  const [username, setUsername] = useState(props.name);
+  const [nickname, setNickname] = useState('');
   const [error, setError] = useState(false);
   // const [errorMessage, setErrorMessage] = useState('TO BE IMPLEMENTED');
 
-
-  const handleChangeFirstName = (e) => {
-    setFirstName(e.target.value)
-  }
-
-  const handleChangeLastName = (e) => {
-    setLastName(e.target.value)
+  const handleChangeEmail = (e) => {
+    setEmail(e.target.value)
   }
 
   const handleChangeUsername = (e) => {
     setUsername(e.target.value)
   }
 
-  const handleChangeEmail = (e) => {
-    setEmail(e.target.value)
+  const handleChangeNickname = (e) => {
+    setNickname(e.target.value)
   }
 
-  const handleChangePassword = (e) => {
-    setPassword(e.target.value)
-  }
 
-  const handleClickSignUp = () => {
+  const handleSignUp = () => {
     let willSubmit = true
-    if (firstName === '') {
-      willSubmit = false  
-    } 
-
-    if (lastName === '') {
-      willSubmit = false
-    }
-    
     if (email === '') {
       willSubmit = false
     }
@@ -173,13 +155,13 @@ export default function SignUp(props) {
       willSubmit = false
     }
 
-    if (password === '') {
+    if (nickname === '') {
       willSubmit = false
     }
 
     if (willSubmit === true) {
       console.log(willSubmit);
-      props.handleSubmit()
+      props.handleSignUp()
     } else {
       console.log(willSubmit);
       setError(true);
@@ -217,36 +199,14 @@ export default function SignUp(props) {
         {/* <form className={classes.form} noValidate> */}
         <form className={classes.form}>
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                autoComplete="fname"
-                name="firstName"
-                variant="outlined"
-                required
-                fullWidth
-                id="firstName"
-                label="First Name"
-                autoFocus
-                onChange={handleChangeFirstName}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                id="lastName"
-                label="Last Name"
-                name="lastName"
-                autoComplete="lname"
-                onChange={handleChangeLastName}
-              />
-            </Grid>
+            
+            
             <Grid item xs={12}>
               <TextField
                 variant="outlined"
                 required
                 fullWidth
+                defaultValue={username}
                 id="username"
                 label="Username"
                 name="username"
@@ -259,6 +219,7 @@ export default function SignUp(props) {
                 variant="outlined"
                 required
                 fullWidth
+                defaultValue={email}
                 id="email"
                 label="Email Address"
                 name="email"
@@ -271,12 +232,11 @@ export default function SignUp(props) {
                 variant="outlined"
                 required
                 fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="current-password"
-                onChange={handleChangePassword}
+                id="nickName"
+                label="Nickname"
+                name="nickName"
+                autoComplete="lname"
+                onChange={handleChangeNickname}
               />
             </Grid>
             <Grid item xs={12}>
@@ -292,8 +252,8 @@ export default function SignUp(props) {
             variant="contained"
             color="primary"
             className={classes.submit}
-            onClick={handleClickSignUp}>
-            Sign Up
+            onClick={handleSignUp}>
+            회원가입
           </Button>
           <Grid container justify="flex-end">
             <Grid item>

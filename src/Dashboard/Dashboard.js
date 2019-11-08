@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Route, Switch, useHistory, useRouteMatch } from 'react-router-dom';
 // import { Fragment, ImageIcon }  from 'react';
 import clsx from 'clsx';
@@ -20,6 +20,7 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import PersonIcon from '@material-ui/icons/Person';
 
+import ProfileButton from './ProfileButton.js'
 import MainListItems from './listItems';
 import MyProblemSets from './MyProblemSets/MyProblemSets';
 import Chart from './Chart';
@@ -123,11 +124,10 @@ const useStyles = makeStyles(theme => ({
 
 export default function Dashboard(props) {
   const classes = useStyles();
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
 
   let { path } = useRouteMatch();
-  let history = useHistory();
 
 
   const handleDrawerOpen = () => {
@@ -136,15 +136,22 @@ export default function Dashboard(props) {
   const handleDrawerClose = () => {
     setOpen(false);
   };
+
+  const handleSignout = () => {
+    props.handleSignout();
+  }
+
+  const handleClickProfile = () => {
+    console.log(props.email);
+    console.log(props.name);
+  }
+
   const handleClickMyProblemSets = () => {
-    console.log('clicked anyway')
-    console.log(history)
-    history.push('/dashboard/my-problem-sets')
-    // props.handleClickMyProblemSets()
+    props.history.push('/dashboard/')
   }
 
   const handleClickDashboard = () => {
-    history.push('/dashboard/dashboard')
+    props.history.push('/dashboard/analysis')
   }
 
 
@@ -167,11 +174,12 @@ export default function Dashboard(props) {
           <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
             Dashboard
           </Typography>
-          <IconButton color="inherit">
-            <Badge badgeContent={4} color="secondary">
-              <PersonIcon />
-            </Badge>
-          </IconButton>
+          <ProfileButton
+            color="inherit"
+            email={props.email}
+            name={props.name}
+            handleSignout={handleSignout}
+            onClick={handleClickProfile}/>
           <IconButton color="inherit">
             <Badge badgeContent={4} color="secondary">
               <NotificationsIcon />
@@ -203,16 +211,13 @@ export default function Dashboard(props) {
       </Drawer>
 
       <Switch>
-        <Route exact path={path}>
-          <Main />
-        </Route>
-        <Route path={`${path}/dashboard`}>
-          <Main />
-        </Route>
-        <Route path={`${path}/my-problem-sets`}>
+        <Route path={path}>
           <MyProblemSets
-            history={history}>
+            history={props.history}>
           </MyProblemSets>
+        </Route>
+        <Route path={`${path}/analysis`}>
+          <Analysis />
         </Route>
       </Switch>
 
@@ -221,7 +226,7 @@ export default function Dashboard(props) {
   );
 }
 
-function Main(props) {
+function Analysis(props) {
   const classes = useStyles();
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 

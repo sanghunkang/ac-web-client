@@ -248,7 +248,8 @@ export default function MyProblemSets(props) {
 				console.log(problems);
 			})
       .catch((err)=> console.log(err)) ;
-		props.history.push('/dashboard/my-problem-sets/problem-list');
+		props.history.push(`${path}/problem-list`);
+		console.log(`${path}/problem-list`);
 	}
 
 	const handleClickDownload = () => { alert('to be implemented'); }
@@ -283,7 +284,8 @@ export default function MyProblemSets(props) {
 						</Grid>
 					</Route>
 
-					<Route path={`${path}/problem-list`}>
+					{/* <Route path={`${path}/problem-list`}> */}
+					<Route path={`/dashboard/problem-list`}>
 						<ProblemAdder
 							handleChangeFileLoad={handleChangeFileLoad}
 							handleClickSaveProblem={handleClickSaveProblem}>

@@ -90,6 +90,7 @@ const tiers = [
     ],
     buttonText: 'Sign up for free',
     buttonVariant: 'outlined',
+    buttonValue: 'free',
   },
   {
     title: 'Standard',
@@ -103,6 +104,7 @@ const tiers = [
     ],
     buttonText: 'Get started',
     buttonVariant: 'contained',
+    buttonValue: 'standard',
   },
   {
     title: 'Premium',
@@ -116,6 +118,8 @@ const tiers = [
     ],
     buttonText: 'Get started',
     buttonVariant: 'outlined',
+    buttonValue: 'premium',
+
   },
 ];
 
@@ -140,6 +144,12 @@ const footers = [
 
 export default function Pricing(props) {
   const classes = useStyles();
+
+  const handlePlanSelection = (e) => {
+    console.log(e.target);
+    console.log(e.currentTarget);
+    props.handlePlanSelection(e.currentTarget.value);
+  }
 
   return (
     <React.Fragment>
@@ -212,7 +222,8 @@ export default function Pricing(props) {
                     fullWidth
                     variant={tier.buttonVariant}
                     color="primary"
-                    onClick={props.handleClickSignUp}>
+                    value={tier.buttonValue}
+                    onClick={handlePlanSelection}>
                     {tier.buttonText}
                   </Button>
                 </CardActions>

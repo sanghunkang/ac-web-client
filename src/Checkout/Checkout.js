@@ -10,7 +10,6 @@ import StepLabel from '@material-ui/core/StepLabel';
 import Button from '@material-ui/core/Button';
 import Link from '@material-ui/core/Link';
 import Typography from '@material-ui/core/Typography';
-import AddressForm from './AddressForm';
 import PaymentForm from './PaymentForm';
 import Review from './Review';
 
@@ -64,22 +63,20 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const steps = ['Shipping address', 'Payment details', 'Review your order'];
+const steps = ['Payment details', 'Review your order'];
 
 function getStepContent(step) {
   switch (step) {
     case 0:
-      return <AddressForm />;
-    case 1:
       return <PaymentForm />;
-    case 2:
+    case 1:
       return <Review />;
     default:
       throw new Error('Unknown step');
   }
 }
 
-export default function Checkout() {
+export default function Checkout(props) {
   const classes = useStyles();
   const [activeStep, setActiveStep] = React.useState(0);
 
@@ -90,6 +87,10 @@ export default function Checkout() {
   const handleBack = () => {
     setActiveStep(activeStep - 1);
   };
+
+  const handleStartUsing = () => {
+    props.handleStartUsing()
+  }
 
   return (
     <React.Fragment>
@@ -123,6 +124,13 @@ export default function Checkout() {
                   Your order number is #2001539. We have emailed your order confirmation, and will
                   send you an update when your order has shipped.
                 </Typography>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleStartUsing}
+                  className={classes.button}>
+                  시작하기 
+                </Button>
               </React.Fragment>
             ) : (
               <React.Fragment>

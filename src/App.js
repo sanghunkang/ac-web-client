@@ -1,4 +1,4 @@
-import React, {  } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Route, Switch, useHistory } from 'react-router-dom';
 
 
@@ -15,40 +15,92 @@ import Checkout from './Checkout/Checkout.js'
 
 function App() {
   let history = useHistory();
+  const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
+  const [isAuthed, setIsAuthed] = useState(false);
+  const [isFirstVisit, setIsFirstVisit] = useState(true);
+  
+  useEffect(() => {
+    setIsFirstVisit(true);
+		// let baseRoute = '/getSetNames?'; // TODO: URL will be changed
+		// let queryString = '';//`set_name=${encodeURIComponent(collectionName)}&num_problems=${encodeURIComponent(10)}`;
+		// let routeQuery = baseRoute + queryString;
+		// console.log(routeQuery);
+		// // fetch('/getContents?set_name=commercial_law&num_contents=10')
+		// fetch(routeQuery)		
+    //   .then((res)=> res.json())
+    //   .then((res)=> {
+		// 		console.log(res);
+		// 		setProblemSets(processGetSetNamesResponse(res));
+		// 		console.log(problems);
+		// 	})
+    //   .catch((err)=> console.log(err)) ;
+	}, []);
 
   const handleClickSignIn = () => {
-    var isAuthed = false;
     if (isAuthed === true) {
-      history.push("/dashboard");
+      history.push('/dashboard');
     } else {
-      console.log("will change the ")
-      history.push("/signin");
+      console.log('will change the ')
+      history.push('/signin');
     }
-
   };//event => setGreeting(event.target.value);
 
+  const handleClickLogin = (userInfo) => {
+    setEmail(userInfo.email);
+    setName(userInfo.name);
+    
+    if (isFirstVisit === true) {
+      history.push('/profile-setting');
+    } else {
+      setIsAuthed(true); // NOTE: Is it a wise idea to do so?
+      history.push('/dashboard');
+    }
+  }
+
   const handleClickSignUp = () => {
-    
-    
-    history.push("/signup");
+    history.push('/signin');
   }
 
   const handleClickUpgradePlan =() => {
-    console.log("will change the aaa")
-    history.push("/pricing");
+    console.log('will change the aaa')
+    history.push('/pricing');
     // setView('pricing')
+  }
+  
+  const handleSignout = () => {
+    setEmail('');
+    setName('');
+    setIsAuthed(false); // NOTE: Is it a wise idea to do so?
+    history.push('/');
   }
 
   const handleClickDownloadApp = () => {
-    alert("준비중입니다.")
+    alert('준비중입니다.')
   }
 
   const handleClickMyProblemSets = () => {
     history.push('/dashboard/my-problem-sets')
   }
 
-  const handleSubmit = () => {
-    history.push("/dashboard");
+  const handleSignUp = () => {
+    if (isFirstVisit === true) {
+      history.push('/pricing');
+    } else {
+      history.push('/dashboard');
+    }
+  }
+
+  const handlePlanSelection = (plan) => {
+    if (plan === 'premium' || plan === 'standard') {
+      history.push('/checkout');
+    } else {
+      history.push('/dashboard');
+    }
+  }
+
+  const handleStartUsing = () => {
+    history.push('/dashboard');
   }
 
   return(
@@ -65,11 +117,13 @@ function App() {
       />
 
       <Route
-        path='/signup'
+        path='/profile-setting'
         render={routeProps => (
           <SignUp
+            email={email}
+            name={name}
             handleClickSignIn={handleClickSignIn}
-            handleSubmit={handleSubmit}
+            handleSignUp={handleSignUp}
             handleClickUpgradePlan={handleClickUpgradePlan}
           />
         )} 
@@ -80,6 +134,7 @@ function App() {
         render={routeProps => (
           <SignInSide
             history={history}
+            handleClickLogin={handleClickLogin}
             handleClickSignIn={handleClickSignIn}
             handleClickSignUp={handleClickUpgradePlan}
           />)
@@ -90,6 +145,10 @@ function App() {
         path='/dashboard'
         render={routeProps => (
           <Dashboard
+            history={history}
+            email={email}
+            name={name}
+            handleSignout={handleSignout}
             handleClickMyProblemSets={handleClickMyProblemSets}
             handleClickUpgradePlan={handleClickUpgradePlan}
           />
@@ -101,7 +160,7 @@ function App() {
         path='/checkout'
         render={routeProps => (
           <Checkout
-            handleClickUpgradePlan={handleClickUpgradePlan}
+            handleStartUsing={handleStartUsing}
           />
         )} 
       />
@@ -110,8 +169,7 @@ function App() {
         path='/pricing'
         render={routeProps => (
           <Pricing
-            handleClickSignUp={handleClickSignUp}
-            handleClickUpgradePlan={handleClickUpgradePlan}
+            handlePlanSelection={handlePlanSelection}
           />
         )} 
       />
