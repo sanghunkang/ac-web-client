@@ -90,6 +90,9 @@ export default function Album(props) {
             </Typography>
             <div className={classes.heroButtons}>
               <Grid container spacing={2} justify="center">
+                <p>
+                  <a href="/functions/test">Tell me a joke!</a>
+                </p>
                 <Grid item>
                   <Button
                     variant="contained"
