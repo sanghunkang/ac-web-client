@@ -236,7 +236,8 @@ export default function MyProblemSets(props) {
 		// var params = {'set_name': collectionName, 'num_contents': 5}
 		// Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
 		
-		let baseRoute = '/getProblems?'; // TODO: URL will be changed
+		let baseRoute = '/.netlify/functions/get_problems?';
+		// let baseRoute = '/getProblems?'; // TODO: URL will be changed
 		let queryString = `set_name=${encodeURIComponent(collectionName)}&num_problems=${encodeURIComponent(10)}`;
 		let routeQuery = baseRoute + queryString;
 		console.log(routeQuery);
