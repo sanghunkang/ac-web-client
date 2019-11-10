@@ -152,7 +152,7 @@ export default function MyProblemSets(props) {
 	let [problemSets, setProblemSets] = useState([]);
 
 	useEffect(() => {
-		let baseRoute = '/getSetNames?'; // TODO: URL will be changed
+		let baseRoute = '/api/getSetNames?'; // TODO: URL will be changed
 		let queryString = '';//`set_name=${encodeURIComponent(collectionName)}&num_problems=${encodeURIComponent(10)}`;
 		let routeQuery = baseRoute + queryString;
 		console.log(routeQuery);
