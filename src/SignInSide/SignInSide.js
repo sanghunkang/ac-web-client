@@ -127,7 +127,7 @@ function SocialLogins(props) {
   }
 
   const processTokenGoogle = (response) => {
-    console.log(response.profileObj);
+    console.log(response);
     handleLogin({
       'email': response.profileObj.email,
       'name': response.profileObj.name,
