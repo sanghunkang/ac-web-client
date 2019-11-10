@@ -152,7 +152,8 @@ export default function MyProblemSets(props) {
 	let [problemSets, setProblemSets] = useState([]);
 
 	useEffect(() => {
-		let baseRoute = '/api/getSetNames?'; // TODO: URL will be changed
+		// let baseRoute = '/api/getSetNames?'; // TODO: URL will be changed
+		let baseRoute = '/.netlify/functions/get_set_names?';
 		let queryString = '';//`set_name=${encodeURIComponent(collectionName)}&num_problems=${encodeURIComponent(10)}`;
 		let routeQuery = baseRoute + queryString;
 		console.log(routeQuery);
@@ -164,7 +165,7 @@ export default function MyProblemSets(props) {
 				setProblemSets(processGetSetNamesResponse(res));
 				console.log(problems);
 			})
-      .catch((err)=> console.log(err)) ;
+			.catch((err)=> console.log(err)) ;
 	}, []);
 		
 	const handleChangeFileLoad = (e) => {
