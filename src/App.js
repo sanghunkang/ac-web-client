@@ -5,7 +5,7 @@ import { Route, Switch, useHistory } from 'react-router-dom';
 // import logo from './logo.svg';
 import './App.css';
 
-import Album from './Album/Album.js';
+import Album from './Intro/Album.js';
 import SignInSide from './SignInSide/SignInSide.js';
 import SignUp from './SignUp/SignUp.js'
 import Dashboard from './Dashboard/Dashboard.js';
