@@ -11,10 +11,8 @@ exports.handler = function(event, context, callback) {
     if (err) { return console.log(err); }
     console.log(body);
     
-    // resToSend.send(JSON.stringify(body));
     callback(null, {
       statusCode: 200,
-      // body: JSON.stringify({ msg: 'Hello From Functions' }),
       body: JSON.stringify(body),
     });
   });
