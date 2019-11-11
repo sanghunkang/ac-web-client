@@ -12,6 +12,14 @@ import LayersIcon from '@material-ui/icons/Layers';
 
 // export const mainListItems = (
 export default function MainListItems(props) {
+  const handleChangePlan = () => {
+    props.handleChangePlan()
+  }
+
+  const handleClickMyProblemSets = () => {
+    props.handleClickMyProblemSets()
+  }
+
   return(
     <List>
       <ListItem
@@ -24,7 +32,7 @@ export default function MainListItems(props) {
       </ListItem>
       <ListItem
         button
-        onClick={props.handleClickMyProblemSets}>
+        onClick={handleClickMyProblemSets}>
         <ListItemIcon>
           <LibraryBooksIcon />
         </ListItemIcon>
@@ -37,11 +45,13 @@ export default function MainListItems(props) {
         </ListItemIcon>
         <ListItemText primary="Reports" />
       </ListItem>
-      <ListItem button>
+      <ListItem 
+        button
+        onClick={handleChangePlan}>
         <ListItemIcon>
           <LayersIcon />
         </ListItemIcon>
-        <ListItemText primary="Integrations" />
+        <ListItemText primary="Plan" />
       </ListItem>
     </List>
   );

@@ -146,6 +146,10 @@ export default function Dashboard(props) {
     console.log(props.name);
   }
 
+  const handleChangePlan = () => {
+    props.handleChangePlan();
+  }
+
   const handleClickMyProblemSets = () => {
     props.history.push('/dashboard/')
   }
@@ -201,6 +205,7 @@ export default function Dashboard(props) {
         </div>
         <Divider />
         <MainListItems
+          handleChangePlan={handleChangePlan}
           handleClickDashboard={handleClickDashboard}
           handleClickMyProblemSets={handleClickMyProblemSets}>
           

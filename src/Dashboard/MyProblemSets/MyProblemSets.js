@@ -148,7 +148,7 @@ export default function MyProblemSets(props) {
 	const classes = useStyles();
 	let { path } = useRouteMatch();
 	let [problems, setProblems] = useState([]);
-	let [collectionName, setCollectionName] = useState(null);
+	// let [collectionName, setCollectionName] = useState(null);
 	let [problemSets, setProblemSets] = useState([]);
 
 	useEffect(() => {
@@ -230,12 +230,8 @@ export default function MyProblemSets(props) {
 		// console.log(e.currentTarget);
 		console.log(e.currentTarget.getAttribute('collectionName'));
 		let collectionName = e.currentTarget.getAttribute('collectionName');
-		setCollectionName(collectionName);
+		// setCollectionName(collectionName);
 
-		// var url = new URL('http://localhost:7003/getContents')
-		// var params = {'set_name': collectionName, 'num_contents': 5}
-		// Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
-		
 		let baseRoute = '/.netlify/functions/get_problems?';
 		// let baseRoute = '/getProblems?'; // TODO: URL will be changed
 		let queryString = `set_name=${encodeURIComponent(collectionName)}&num_problems=${encodeURIComponent(10)}`;

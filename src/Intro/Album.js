@@ -64,6 +64,14 @@ const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 export default function Album(props) {
   const classes = useStyles();
 
+  const handleGettingStarted = () => {
+    props.handleGettingStarted();
+  }
+
+  const handleClickDownloadApp = () => {
+    alert('준비중입니다.');
+  }
+
   return (
     <React.Fragment>
       <CssBaseline />
@@ -94,7 +102,7 @@ export default function Album(props) {
                   <Button
                     variant="contained"
                     color="primary"
-                    onClick={props.handleClickSignUp}>
+                    onClick={handleGettingStarted}>
                     지금 시작하기
                   </Button>
                 </Grid>
@@ -102,7 +110,7 @@ export default function Album(props) {
                   <Button
                     variant="outlined"
                     color="primary"
-                    onClick={props.handleClickDownloadApp}>
+                    onClick={handleClickDownloadApp}>
                     앱스토어에서 다운로드
                   </Button>
                 </Grid>

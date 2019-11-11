@@ -17,78 +17,68 @@ function App() {
   let history = useHistory();
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
+  const [token, setToken] = useState('');
   const [isAuthed, setIsAuthed] = useState(false);
   const [isFirstVisit, setIsFirstVisit] = useState(true);
   
-  useEffect(() => {
-    setIsFirstVisit(true);
-		// let baseRoute = '/getSetNames?'; // TODO: URL will be changed
-		// let queryString = '';//`set_name=${encodeURIComponent(collectionName)}&num_problems=${encodeURIComponent(10)}`;
-		// let routeQuery = baseRoute + queryString;
-		// console.log(routeQuery);
-		// // fetch('/getContents?set_name=commercial_law&num_contents=10')
-		// fetch(routeQuery)		
-    //   .then((res)=> res.json())
-    //   .then((res)=> {
-		// 		console.log(res);
-		// 		setProblemSets(processGetSetNamesResponse(res));
-		// 		console.log(problems);
-		// 	})
-    //   .catch((err)=> console.log(err)) ;
-	}, []);
-
-  const handleClickSignIn = () => {
-    if (isAuthed === true) {
-      history.push('/dashboard');
-    } else {
-      console.log('will change the ')
-      history.push('/signin');
-    }
-  };//event => setGreeting(event.target.value);
-
-  const handleClickLogin = (userInfo) => {
-    setEmail(userInfo.email);
-    setName(userInfo.name);
-    
-    if (isFirstVisit === true) {
-      history.push('/profile-setting');
-    } else {
-      setIsAuthed(true); // NOTE: Is it a wise idea to do so?
-      history.push('/dashboard');
-    }
-  }
-
-  const handleClickSignUp = () => {
+  // useEffect(() => {
+  //   setIsFirstVisit(true);
+  // }, []);
+  
+  const handleGettingStarted = () => {
     history.push('/signin');
   }
 
-  const handleClickUpgradePlan =() => {
-    console.log('will change the aaa')
-    history.push('/pricing');
-    // setView('pricing')
-  }
-  
-  const handleSignout = () => {
-    setEmail('');
-    setName('');
-    setIsAuthed(false); // NOTE: Is it a wise idea to do so?
-    history.push('/');
-  }
-
-  const handleClickDownloadApp = () => {
-    alert('준비중입니다.')
-  }
-
-  const handleClickMyProblemSets = () => {
-    history.push('/dashboard/my-problem-sets')
+  const handleClickLogin = (userInfo) => {
+    var bearerToken = 'Bearer ' + userInfo.token;
+    console.log(bearerToken);
+    
+		fetch('/.netlify/functions/signin?', {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': bearerToken,
+      },
+    })		
+    .then((res)=> res.json())
+    .then((res)=> {
+      console.log(JSON.parse(res).isFirstVisit);
+      if (JSON.parse(res).isFirstVisit === true) {
+        setIsFirstVisit(JSON.parse(res).isFirstVisit);
+        history.push('/profile-setting');
+      } else {
+        history.push('/dashboard');
+      }
+    })
+    .catch((err)=> console.log(err)) ;
+    
+    setEmail(userInfo.email);
+    setName(userInfo.name);
+    setToken(userInfo.token);
+    setIsAuthed(true); // NOTE: Is it a wise idea to do so?
   }
 
   const handleSignUp = () => {
-    if (isFirstVisit === true) {
-      history.push('/pricing');
-    } else {
-      history.push('/dashboard');
-    }
+    console.log(token);
+    var bearerToken = 'Bearer ' + token;
+    
+		fetch('/.netlify/functions/signup?', {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': bearerToken,
+      },
+    })		
+    .then((res)=> res.json())
+                      
+      .then((res)=> {
+				console.log(res);
+			})
+      .catch((err)=> console.log(err)) ;
+
+    history.push('/pricing');
   }
 
   const handlePlanSelection = (plan) => {
@@ -99,8 +89,42 @@ function App() {
     }
   }
 
-  const handleStartUsing = () => {
+  const handleCheckout = () => {
+    console.log(token);
+    var bearerToken = 'Bearer ' + token;
+    
+    // TODO: This is the place to add payment method
+    fetch('/.netlify/functions/checkout?', {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': bearerToken,
+      },
+    })		
+      .then((res)=> res.json())
+      .then((res)=> {
+        console.log(res);
+      })
+      .catch((err)=> console.log(err)) ;
+
+    
     history.push('/dashboard');
+  }
+
+  const handleChangePlan =() => {
+    history.push('/pricing');
+  }
+
+  const handleSignout = () => {
+    setEmail('');
+    setName('');
+    setIsAuthed(false); // NOTE: Is it a wise idea to do so?
+    history.push('/');
+  }
+
+  const handleClickMyProblemSets = () => {
+    history.push('/dashboard/my-problem-sets')
   }
 
   return(
@@ -109,8 +133,7 @@ function App() {
         exact path='/'
         render={(routeprops) => (
           <Album
-            handleClickSignUp={handleClickSignUp}
-            handleClickDownloadApp={handleClickDownloadApp}
+            handleGettingStarted={handleGettingStarted}
             isAuthed={true} 
           />
         )}
@@ -122,9 +145,7 @@ function App() {
           <SignUp
             email={email}
             name={name}
-            handleClickSignIn={handleClickSignIn}
             handleSignUp={handleSignUp}
-            handleClickUpgradePlan={handleClickUpgradePlan}
           />
         )} 
       />
@@ -135,8 +156,6 @@ function App() {
           <SignInSide
             history={history}
             handleClickLogin={handleClickLogin}
-            handleClickSignIn={handleClickSignIn}
-            handleClickSignUp={handleClickUpgradePlan}
           />)
         }
       />
@@ -150,20 +169,12 @@ function App() {
             name={name}
             handleSignout={handleSignout}
             handleClickMyProblemSets={handleClickMyProblemSets}
-            handleClickUpgradePlan={handleClickUpgradePlan}
+            handleChangePlan={handleChangePlan}
           />
         )} 
       />
 
       
-      <Route
-        path='/checkout'
-        render={routeProps => (
-          <Checkout
-            handleStartUsing={handleStartUsing}
-          />
-        )} 
-      />
 
       <Route
         path='/pricing'
@@ -171,8 +182,14 @@ function App() {
           <Pricing
             handlePlanSelection={handlePlanSelection}
           />
-        )} 
-      />
+        )}/>
+      <Route
+        path='/checkout'
+        render={routeProps => (
+          <Checkout
+            handleCheckout={handleCheckout}
+          />
+        )}/>
     </Switch>
   );
     

@@ -128,20 +128,17 @@ function SocialLogins(props) {
 
   const processTokenGoogle = (response) => {
     console.log(response);
+    console.log(response.tokenObj);
     handleLogin({
       'email': response.profileObj.email,
       'name': response.profileObj.name,
+      'token': response.tokenObj.id_token,
     });
   }
 
   const handleLogin = (userInfo) => {
     props.handleClickLogin(userInfo);
   }
-  
-  // render() {
-  //   // var history = useHistory();
-
-    
 
   return (
     <div className="SocialLogins">
@@ -160,6 +157,7 @@ function SocialLogins(props) {
               Sign in with Google
             </Button>
           )}
+          accessType="offline"
           buttonText="Login"
           onSuccess={processTokenGoogle}
           onFailure={processTokenGoogle}
