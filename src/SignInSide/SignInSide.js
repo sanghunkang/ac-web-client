@@ -64,8 +64,8 @@ const useStyles = makeStyles(theme => ({
 export default function SignInSide(props) {
   const classes = useStyles();
 
-  const handleClickLogin = (userInfo) => {
-    props.handleClickLogin(userInfo);
+  const handleClickSignIn = (userInfo) => {
+    props.handleClickSignIn(userInfo);
   }
 
   return (
@@ -86,7 +86,7 @@ export default function SignInSide(props) {
           <form className={classes.form} noValidate>  
             <SocialLogins 
               history={props.history}
-              handleClickLogin={handleClickLogin}/>
+              handleClickSignIn={handleClickSignIn}/>
             <Grid container>
               <Grid item xs>
                 <Link href="#" variant="body2">
@@ -137,7 +137,7 @@ function SocialLogins(props) {
   }
 
   const handleLogin = (userInfo) => {
-    props.handleClickLogin(userInfo);
+    props.handleClickSignIn(userInfo);
   }
 
   return (

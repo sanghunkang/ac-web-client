@@ -127,8 +127,7 @@ function MySnackbarContentWrapper(props) {
 export default function SignUp(props) {
   const classes = useStyles();
   const [email, setEmail] = useState(props.email);
-  const [username, setUsername] = useState(props.name);
-  const [nickname, setNickname] = useState('');
+  // const [username, setUsername] = useState();
   const [error, setError] = useState(false);
   // const [errorMessage, setErrorMessage] = useState('TO BE IMPLEMENTED');
 
@@ -137,31 +136,23 @@ export default function SignUp(props) {
   }
 
   const handleChangeUsername = (e) => {
-    setUsername(e.target.value)
-  }
-
-  const handleChangeNickname = (e) => {
-    setNickname(e.target.value)
+    props.handleChangeUsername(e.target.value)
   }
 
 
   const handleSignUp = () => {
     let willSubmit = true
-    if (email === '') {
-      willSubmit = false
-    }
+    // if (email === '') {
+    //   willSubmit = false
+    // }
 
-    if (username === '') {
-      willSubmit = false
-    }
-
-    if (nickname === '') {
-      willSubmit = false
-    }
+    // if (username === '') {
+    //   willSubmit = false
+    // }
 
     if (willSubmit === true) {
       console.log(willSubmit);
-      props.handleSignUp()
+      props.handleSignUp();
     } else {
       console.log(willSubmit);
       setError(true);
@@ -199,24 +190,10 @@ export default function SignUp(props) {
         {/* <form className={classes.form} noValidate> */}
         <form className={classes.form}>
           <Grid container spacing={2}>
-            
-            
             <Grid item xs={12}>
               <TextField
                 variant="outlined"
-                required
-                fullWidth
-                defaultValue={username}
-                id="username"
-                label="Username"
-                name="username"
-                autoComplete="username"
-                onChange={handleChangeUsername}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                variant="outlined"
+                disabled
                 required
                 fullWidth
                 defaultValue={email}
@@ -232,11 +209,11 @@ export default function SignUp(props) {
                 variant="outlined"
                 required
                 fullWidth
-                id="nickName"
-                label="Nickname"
-                name="nickName"
-                autoComplete="lname"
-                onChange={handleChangeNickname}
+                id="username"
+                label="Username"
+                name="username"
+                autoComplete="username"
+                onChange={handleChangeUsername}
               />
             </Grid>
             <Grid item xs={12}>

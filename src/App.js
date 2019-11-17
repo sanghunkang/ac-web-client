@@ -1,84 +1,90 @@
 import React, { useEffect, useState } from 'react';
 import { Route, Switch, useHistory } from 'react-router-dom';
 
-
-// import logo from './logo.svg';
 import './App.css';
 
 import Album from './Intro/Album.js';
 import SignInSide from './SignInSide/SignInSide.js';
 import SignUp from './SignUp/SignUp.js'
-import Dashboard from './Dashboard/Dashboard.js';
 import Pricing from './Pricing/Pricing.js'
 import Checkout from './Checkout/Checkout.js'
-// import StickyFooter from './sticky-footer/StickyFooter';
+import Dashboard from './Dashboard/Dashboard.js';
 
 function App() {
   let history = useHistory();
-  const [email, setEmail] = useState('');
-  const [name, setName] = useState('');
-  const [token, setToken] = useState('');
-  const [isAuthed, setIsAuthed] = useState(false);
-  const [isFirstVisit, setIsFirstVisit] = useState(true);
+
+  const [email, setEmail] = useState();
+  const [username, setUsername] = useState('');
   
   // useEffect(() => {
   //   setIsFirstVisit(true);
   // }, []);
   
+  // Handlers for root-level routes, localStorages and global states
   const handleGettingStarted = () => {
+    console.log('GettingStarted');
     history.push('/signin');
   }
 
-  const handleClickLogin = (userInfo) => {
-    var bearerToken = 'Bearer ' + userInfo.token;
+  const handleClickSignIn = (userInfo) => {
+    var bearerToken = localStorage.getItem('authToken');
+    if (bearerToken === null) {
+      bearerToken = 'Bearer ' + userInfo.token;
+      localStorage.setItem('authToken', bearerToken);
+    }
     console.log(bearerToken);
     
-		fetch('/.netlify/functions/signin?', {
+    let options = {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
         'Authorization': bearerToken,
       },
-    })		
-    .then((res)=> res.json())
-    .then((res)=> {
-      console.log(JSON.parse(res).isFirstVisit);
-      if (JSON.parse(res).isFirstVisit === true) {
-        setIsFirstVisit(JSON.parse(res).isFirstVisit);
+    }
+
+		fetch('/.netlify/functions/signin?', options)		
+    .then(res => res.json())
+    .then(res => {
+      let responseBody = JSON.parse(res);
+      if (responseBody.user === null) {
         history.push('/profile-setting');
       } else {
         history.push('/dashboard');
       }
     })
-    .catch((err)=> console.log(err)) ;
+    .catch(err => console.log(err)) ;
     
     setEmail(userInfo.email);
-    setName(userInfo.name);
-    setToken(userInfo.token);
-    setIsAuthed(true); // NOTE: Is it a wise idea to do so?
+  }
+
+  const handleChangeUsername = (username) => {
+    setUsername(username);
+    console.log(username);
   }
 
   const handleSignUp = () => {
-    console.log(token);
-    var bearerToken = 'Bearer ' + token;
+    var bearerToken = localStorage.getItem('authToken');
+    console.log(bearerToken);
     
-		fetch('/.netlify/functions/signup?', {
-      method: 'GET',
+    let bodyData = { username: username }
+
+    let options = {
+      method: 'POST',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
         'Authorization': bearerToken,
       },
-    })		
-    .then((res)=> res.json())
-                      
-      .then((res)=> {
-				console.log(res);
-			})
-      .catch((err)=> console.log(err)) ;
+      // redirect: 'follow', // manual, *follow, error
+      // referrer: 'no-referrer', // no-referrer, *client
+      body: JSON.stringify(bodyData), // body data type must match "Content-Type" header
+    }
 
-    history.push('/pricing');
+		fetch('/.netlify/functions/signup?', options)		
+    .then(res => res.json())                  
+    .then(res => history.push('/pricing'))
+    .catch(err => console.log(err));
   }
 
   const handlePlanSelection = (plan) => {
@@ -90,23 +96,23 @@ function App() {
   }
 
   const handleCheckout = () => {
-    console.log(token);
-    var bearerToken = 'Bearer ' + token;
+    var bearerToken = localStorage.getItem('authToken');
+    console.log(bearerToken);
     
-    // TODO: This is the place to add payment method
-    fetch('/.netlify/functions/checkout?', {
+    let options = {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
         'Authorization': bearerToken,
       },
-    })		
-      .then((res)=> res.json())
-      .then((res)=> {
-        console.log(res);
-      })
-      .catch((err)=> console.log(err)) ;
+    }
+
+    // TODO: This is the place to add payment method
+    fetch('/.netlify/functions/checkout?', options)		
+    .then(res => res.json())
+    .then(res => console.log(res))
+    .catch(err => console.log(err)) ;
 
     
     history.push('/dashboard');
@@ -117,9 +123,9 @@ function App() {
   }
 
   const handleSignout = () => {
+    setUsername('');
     setEmail('');
-    setName('');
-    setIsAuthed(false); // NOTE: Is it a wise idea to do so?
+    localStorage.removeItem('authToken');
     history.push('/');
   }
 
@@ -127,73 +133,55 @@ function App() {
     history.push('/dashboard/my-problem-sets')
   }
 
+  // Props for each (root level) routes
+  let commonProps = {
+    email: email,
+    history: history
+  }
+
+  let indexProps = {
+    handleGettingStarted: handleGettingStarted,
+    ...commonProps
+  }
+
+  let signinProps = {
+    handleClickSignIn: handleClickSignIn,
+    ...commonProps
+  }
+
+  let signupProps = {
+    handleChangeUsername: handleChangeUsername,
+    handleSignUp: handleSignUp,
+    ...commonProps
+  }
+
+  let dashboardProps = {
+    handleSignout: handleSignout,
+    handleClickMyProblemSets: handleClickMyProblemSets,
+    handleChangePlan: handleChangePlan,
+    ...commonProps
+  }
+
+  let pricingProps = {
+    handlePlanSelection: handlePlanSelection,
+    ...commonProps
+  }
+
+  let checkoutProps = {
+    handleCheckout: handleCheckout,
+    ...commonProps
+  }
+
   return(
     <Switch>
-      <Route 
-        exact path='/'
-        render={(routeprops) => (
-          <Album
-            handleGettingStarted={handleGettingStarted}
-            isAuthed={true} 
-          />
-        )}
-      />
-
-      <Route
-        path='/profile-setting'
-        render={routeProps => (
-          <SignUp
-            email={email}
-            name={name}
-            handleSignUp={handleSignUp}
-          />
-        )} 
-      />
-
-      <Route 
-        exact path='/signin'
-        render={routeProps => (
-          <SignInSide
-            history={history}
-            handleClickLogin={handleClickLogin}
-          />)
-        }
-      />
-
-      <Route
-        path='/dashboard'
-        render={routeProps => (
-          <Dashboard
-            history={history}
-            email={email}
-            name={name}
-            handleSignout={handleSignout}
-            handleClickMyProblemSets={handleClickMyProblemSets}
-            handleChangePlan={handleChangePlan}
-          />
-        )} 
-      />
-
-      
-
-      <Route
-        path='/pricing'
-        render={routeProps => (
-          <Pricing
-            handlePlanSelection={handlePlanSelection}
-          />
-        )}/>
-      <Route
-        path='/checkout'
-        render={routeProps => (
-          <Checkout
-            handleCheckout={handleCheckout}
-          />
-        )}/>
+      <Route exact path='/' render={ ()=> <Album {...indexProps}/> }/>
+      <Route path='/signin' render={ ()=> <SignInSide {...signinProps}/> }/>
+      <Route path='/profile-setting' render={ ()=> <SignUp {...signupProps}/> }/>
+      <Route path='/pricing' render={ ()=> <Pricing {...pricingProps}/> }/>
+      <Route path='/checkout' render={ ()=> <Checkout {...checkoutProps} /> }/>
+      <Route path='/dashboard' render={ ()=> <Dashboard {...dashboardProps}/> }/>
     </Switch>
   );
-    
 }
-
 
 export default App;
