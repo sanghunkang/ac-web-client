@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -63,9 +63,44 @@ const useStyles = makeStyles(theme => ({
 
 export default function SignInSide(props) {
   const classes = useStyles();
+  const [accessToken, setAccessToken] = useState(props.accessToken);
 
-  const handleClickSignIn = (userInfo) => {
-    props.handleClickSignIn(userInfo);
+  useEffect(() => {
+    // Check if already authed
+    if (checkIsAuthed(accessToken) === true) {
+      //    If authed, skip this page
+      props.history.push('/dashboard'); // TODO: Emtpy this step at history
+    } else {
+      //    If not authed, do nothing
+    }
+	}, []);
+
+  const handleIssueToken = (token) => {
+    props.handleIssueToken(token)
+  }
+
+  const handleClickSignIn = () => {
+    console.log(accessToken)
+    let options = {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': accessToken,
+      },
+    }
+
+		fetch('/.netlify/functions/signin?', options)		
+    .then(res => res.json())
+    .then(res => {
+      let responseBody = JSON.parse(res);
+      if (responseBody.user === null) {
+        props.history.push('/profile-setting');
+      } else {
+        props.history.push('/dashboard');
+      }
+    })
+    .catch(err => console.log(err)) ;
   }
 
   return (
@@ -86,6 +121,7 @@ export default function SignInSide(props) {
           <form className={classes.form} noValidate>  
             <SocialLogins 
               history={props.history}
+              handleIssueToken={handleIssueToken}
               handleClickSignIn={handleClickSignIn}/>
             <Grid container>
               <Grid item xs>
@@ -101,7 +137,6 @@ export default function SignInSide(props) {
                   {"Don't have an account? Sign Up"}
                 </Link>
               </Grid>
-              
             </Grid>
             <Box mt={5}>
               <Copyright />
@@ -116,8 +151,6 @@ export default function SignInSide(props) {
 
 // class SocialLogins extends Component {
 function SocialLogins(props) {
-
-
   const responseFacebook = (response) => {
     console.log(response);
     handleLogin({
@@ -134,9 +167,11 @@ function SocialLogins(props) {
       'name': response.profileObj.name,
       'token': response.tokenObj.id_token,
     });
+    props.handleIssueToken(response.tokenObj);
   }
 
   const handleLogin = (userInfo) => {
+    
     props.handleClickSignIn(userInfo);
   }
 

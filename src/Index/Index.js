@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
+
 import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
 import CameraIcon from '@material-ui/icons/PhotoCamera';
@@ -61,11 +62,19 @@ const useStyles = makeStyles(theme => ({
 
 const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
-export default function Album(props) {
+export default function Index(props) {
   const classes = useStyles();
+  const [accessToken, setAccessToken] = useState(props.accessToken);
+
+  useEffect(() => {
+    // Check if already authed
+    //    If authed, render with user info
+    //    If not authed, do nothing
+	}, []);
+
 
   const handleGettingStarted = () => {
-    props.handleGettingStarted();
+    props.history.push('/signin');
   }
 
   const handleClickDownloadApp = () => {

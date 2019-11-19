@@ -3,7 +3,7 @@ import { Route, Switch, useHistory } from 'react-router-dom';
 
 import './App.css';
 
-import Album from './Intro/Album.js';
+import Index from './Index/Index.js';
 import SignInSide from './SignInSide/SignInSide.js';
 import SignUp from './SignUp/SignUp.js'
 import Pricing from './Pricing/Pricing.js'
@@ -13,33 +13,29 @@ import Dashboard from './Dashboard/Dashboard.js';
 function App() {
   let history = useHistory();
 
-  const [email, setEmail] = useState();
-  const [username, setUsername] = useState('');
+  const [accessToken, setAccessToken] = useState(localStorage.getItem('accessToken'));
+  const [email, setEmail] = useState(null);
+  const [username, setUsername] = useState(null);
+  const [isAuthed, setIsAuthed] = useState(false);
+
+  useEffect(() => {
+    console.log(commonProps);
+  }, []);
   
-  // useEffect(() => {
-  //   setIsFirstVisit(true);
-  // }, []);
-  
-  // Handlers for root-level routes, localStorages and global states
-  const handleGettingStarted = () => {
-    console.log('GettingStarted');
-    history.push('/signin');
+  // Handlers for localStorages and global states
+  const handleIssueToken = (token) => {
+    localStorage.setItem('accessToken', 'Bearer ' + token);
+    console.log('Bearer ' + token);
   }
 
-  const handleClickSignIn = (userInfo) => {
-    var bearerToken = localStorage.getItem('authToken');
-    if (bearerToken === null) {
-      bearerToken = 'Bearer ' + userInfo.token;
-      localStorage.setItem('authToken', bearerToken);
-    }
-    console.log(bearerToken);
-    
+  const handleCheckIsAuthed = () => {
+    console.log(accessToken)
     let options = {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        'Authorization': bearerToken,
+        'Authorization': accessToken,
       },
     }
 
@@ -48,15 +44,18 @@ function App() {
     .then(res => {
       let responseBody = JSON.parse(res);
       if (responseBody.user === null) {
-        history.push('/profile-setting');
+        setEmail(null)
+        setUsername(null);
+        setIsAuthed(false);
       } else {
-        history.push('/dashboard');
+        setEmail(responseBody.user.email)
+        setUsername(responseBody.username);
+        setIsAuthed(true);
       }
     })
     .catch(err => console.log(err)) ;
-    
-    setEmail(userInfo.email);
   }
+
 
   const handleChangeUsername = (username) => {
     setUsername(username);
@@ -64,7 +63,7 @@ function App() {
   }
 
   const handleSignUp = () => {
-    var bearerToken = localStorage.getItem('authToken');
+    var bearerToken = localStorage.getItem('accessToken');
     console.log(bearerToken);
     
     let bodyData = { username: username }
@@ -87,16 +86,8 @@ function App() {
     .catch(err => console.log(err));
   }
 
-  const handlePlanSelection = (plan) => {
-    if (plan === 'premium' || plan === 'standard') {
-      history.push('/checkout');
-    } else {
-      history.push('/dashboard');
-    }
-  }
-
   const handleCheckout = () => {
-    var bearerToken = localStorage.getItem('authToken');
+    var bearerToken = localStorage.getItem('accessToken');
     console.log(bearerToken);
     
     let options = {
@@ -125,7 +116,7 @@ function App() {
   const handleSignout = () => {
     setUsername('');
     setEmail('');
-    localStorage.removeItem('authToken');
+    localStorage.removeItem('accessToken');
     history.push('/');
   }
 
@@ -136,16 +127,18 @@ function App() {
   // Props for each (root level) routes
   let commonProps = {
     email: email,
-    history: history
+    history: history,
+    accessToken: accessToken,
   }
 
   let indexProps = {
-    handleGettingStarted: handleGettingStarted,
+    // handleGettingStarted: handleGettingStarted,
     ...commonProps
   }
 
   let signinProps = {
-    handleClickSignIn: handleClickSignIn,
+    handleIssueToken: handleIssueToken,
+    // handleClickSignIn: handleClickSignIn,
     ...commonProps
   }
 
@@ -163,7 +156,6 @@ function App() {
   }
 
   let pricingProps = {
-    handlePlanSelection: handlePlanSelection,
     ...commonProps
   }
 
@@ -174,7 +166,7 @@ function App() {
 
   return(
     <Switch>
-      <Route exact path='/' render={ ()=> <Album {...indexProps}/> }/>
+      <Route exact path='/' render={ ()=> <Index {...indexProps}/> }/>
       <Route path='/signin' render={ ()=> <SignInSide {...signinProps}/> }/>
       <Route path='/profile-setting' render={ ()=> <SignUp {...signupProps}/> }/>
       <Route path='/pricing' render={ ()=> <Pricing {...pricingProps}/> }/>
@@ -185,3 +177,30 @@ function App() {
 }
 
 export default App;
+
+function checkIsAuthed(accessToken) {
+    console.log(accessToken)
+  var isAuthed = false;
+  let options = {
+    method: 'GET',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Authorization': accessToken,
+    },
+  }
+
+  fetch('/.netlify/functions/signin?', options)		
+  .then(res => res.json())
+  .then(res => {
+    let responseBody = JSON.parse(res);
+    if (responseBody.user === null) {
+      isAuthed = true;
+    } else {
+      isAuthed = false;
+    }
+  })
+  .catch(err => console.log(err)) ;
+
+  return isAuthed;
+}

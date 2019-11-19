@@ -145,10 +145,14 @@ const footers = [
 export default function Pricing(props) {
   const classes = useStyles();
 
+
   const handlePlanSelection = (e) => {
-    console.log(e.target);
-    console.log(e.currentTarget);
-    props.handlePlanSelection(e.currentTarget.value);
+    let plan = e.currentTarget.value
+    if (plan === 'premium' || plan === 'standard') {
+      props.history.push('/checkout');
+    } else {
+      props.history.push('/dashboard');
+    }
   }
 
   return (
